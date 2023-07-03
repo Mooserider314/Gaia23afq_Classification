@@ -28,3 +28,38 @@ with open(input_file, 'r') as file_in, open(output_file, 'w', newline='') as fil
 
         except ValueError:
             continue
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+
+
+
+import csv
+import matplotlib.pyplot as plt
+
+input_file = '/content/output_err12.csv'  # Replace with your CSV file path
+
+x_data = []
+y_data = []
+
+with open(input_file, 'r') as file:
+    reader = csv.reader(file)
+
+    # Skip the first row
+    next(reader)
+
+    for row in reader:
+        x_data.append(float(row[0]))  # Assuming x-values are in the first column
+        y_data.append(float(row[1]))  # Assuming y-values are in the second column
+
+# Plot the data
+plt.plot(x_data, y_data)
+plt.gca().invert_yaxis()
+plt.xlabel('HJD')
+plt.ylabel('Magnitude')
+plt.title('Periodicity Gaia23afq')
+plt.show()
