@@ -1,0 +1,18 @@
+#periodicity 1
+
+import os
+data = pd.read_csv('/content/lightcurve.csv')
+data['mag'] = pd.to_numeric(data['mag'], errors='coerce')
+quiescent = data['mag'] >= data['mag'].median()
+outburts = data['mag'] < data['mag'].median()
+
+time_q = data['HJD'][quiescent].values
+mag_q = data['mag'][quiescent].values
+time_o = data['HJD'][outburts].values
+mag_o = data['mag'][outburts].values
+
+frequency, power = LombScargle (time_q, mag_q).autopower()
+peak_freq = frequency[np.argmax(power)]
+period=1/peak_freq
+
+print ('periodicity of quintessence is {:.3f} days'.format(period))
