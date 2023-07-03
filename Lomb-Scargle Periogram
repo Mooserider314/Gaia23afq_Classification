@@ -37,6 +37,11 @@ else:
     print("Failed to retrieve JSON data.")
 
 
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy.timeseries import LombScargle
@@ -58,6 +63,175 @@ plt.xlabel('Frequency (1/d)')
 plt.ylabel('Lomb-Scargle Power')
 plt.title('Lomb-Scargle periodogram of Gaia23afq')
 plt.show()
+
+
+----------------------------------------------------------------------------------------------------------------------
+
+
+
+# filter frequency and power values within desired range
+frequency_filtered = frequency[(frequency >= 0) & (frequency <= 0.005)]
+power_filtered = power[(frequency >= 0) & (frequency <= 0.005)]
+
+period = 1/frequency_filtered[np.argmax(magnitude)]
+print(f"The period of the time series is {period}")
+
+#Plotting the result.
+plt.plot(frequency_filtered, power_filtered)
+plt.xlabel('Frequency (1/d)')
+plt.ylabel('Lomb-Scargle Power')
+plt.title('Lomb-Scargle periodogram of Gaia23afq')
+plt.show()
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+
+
+# Find the highest peak (fundamental frequency)
+fundamental_index = np.argmax(power)
+fundamental_frequency = frequency[fundamental_index]
+
+# Check for harmonics
+harmonics = []
+for harmonic in range(2, 6):  # Check harmonics up to the 5th multiple
+    harmonic_frequency = fundamental_frequency * harmonic
+    harmonic_index = np.argmin(np.abs(frequency - harmonic_frequency))
+    power_at_harmonic = power[harmonic_index]
+    harmonics.append((harmonic_frequency, power_at_harmonic))
+
+# Print the identified harmonics
+for harmonic_freq, harmonic_power in harmonics:
+    print(f"Harmonic frequency: {harmonic_freq:.3f}, Power: {harmonic_power:.3f}")
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from astropy.timeseries import LombScargle
+
+#To create the Lomb-Scargle periodogram as shown on the general AstroPy website (https://docs.astropy.org/en/stable/timeseries/lombscargle.html#id38), I did the following.
+#Call upon the time and magnitude values for the data. As these are needed to find the frequency and power.
+time = hjd_values
+magnitude = mag_values
+
+#This code converts the time to numerical values (in case needed. However not much changes of the results from this. I only needed it for trying out some other stuff which didn't work).
+time = np.asarray(time)
+
+#The next line of code computes the Lomb-Scargle in the exact way it was done on the AstroPy link given through autopower().
+frequency, power = LombScargle(time, magnitude).autopower()
+
+#Plotting the result.
+plt.plot(frequency, power)
+plt.xlabel('Frequency (1/d)')
+plt.xlim(0.0, 0.030)
+plt.ylabel('Lomb-Scargle Power')
+plt.title('Lomb-Scargle periodogram of Gaia23afq')
+plt.show()
+
+
+
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+#According to the AstroPy general page on Lomb-Scargle periodograms (so the same one I provided the link to), we can know with what certainty the maximum peak
+# observed in out obtained periodogram might've been due to chance.
+
+#The Lomb-Scargle periodogram is calculated again.
+ls = LombScargle(time, magnitude)
+frequency, power = ls.autopower()
+
+# np.argmax() finds the power value (y-axis value) with the maximum number. That would be the highest peak in the periodogram.
+max_peak_index = np.argmax(power)
+
+#It is explained on the website that the way you know whether your peak was truly due to chance or not is through something known as the false alarm probability.
+#There are three methods of doing a false alarm probability approximation. Bootstrap, Davies, and Baluev. It is also explained in the link of the AstroPy page.
+
+#Bootstrap method.
+bootstrap_fap = ls.false_alarm_probability(power[max_peak_index], method='bootstrap')
+
+#Davies method.
+davies_fap = ls.false_alarm_probability(power[max_peak_index], method='davies')
+
+#Baluev method.
+baluev_fap = ls.false_alarm_probability(power[max_peak_index], method='baluev')
+
+#Print the result from each methods of false alarm probability approximation.
+print("Bootstrap FAP:", bootstrap_fap)
+print("Davies FAP:", davies_fap)
+print("Baluev FAP:", baluev_fap)
+
+
+#After running that block of code, you might have obtained the following values:
+
+
+#Bootstrap FAP: 0.0
+#Davies FAP: 0.002574158451522415
+#Baluev FAP: 0.0025708481475233886
+
+
+#The interpretation of which is that whatever number you got, indicates the likelihood that this peak may have been observed through noise alone.
+
+
+#In the case of the data from the JSON link, it shows that there's a 0.0% likelihood of this having been due to chance according to the Bootstrap FAP.
+
+#0.2574% of it having been observed due to chance from the Davies FAP.
+
+#And 0.2571% of it having been observed due to chance from the Baluev FAP.
+
+#All three FAP calculations show that this peak is of relevance to the frequency assiociated with the outburst period of this star.
+
+
+
+------------------------------------------------------------------------------------------------------
+
+
+
+
+#However, due to the fact that there are many neighboring peaks near that maximum one, we can't ignore them. By setting a horizontal cutoff line,
+#we can say that we're interested in a set amounts of peaks which may be associated with our star. And to make it visually more exact, we can plot
+#that cutoff and call everything below it noise.
+
+#The code for that would be this:
+#Set the desired false alarm probability. You can freely change this number as needed. Depending on how precise you want to be.
+false_alarm_probability = 0.1
+
+#This calculates a false alarm level for the given probability.
+false_alarm_level = LombScargle(time, magnitude).false_alarm_level(false_alarm_probability)
+
+#Plot the Lomb-Scargle power over frequency with the false alarm level included.
+plt.plot(frequency, power)
+plt.axhline(false_alarm_level, linestyle='--', color='red', label='False alarm level')
+plt.xlabel('Frequency (1/d)')
+plt.ylabel('Lomb-Scargle Power')
+plt.title('LS periodogram of Gaia23afq with false alarm level')
+plt.legend()
+plt.show()
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------
+
+
+
 
 
 
