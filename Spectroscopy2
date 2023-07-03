@@ -1,0 +1,595 @@
+#Plot 1
+!pip install specutils
+from astropy.io import fits
+import numpy as np
+import matplotlib.pyplot as plt
+from astropy import units as u
+from specutils import Spectrum1D
+
+#This code plots one of the downloaded ESO files. I corrected for the units and obtained something representative of the
+#actual plot.
+
+#My suspicion is that this might be in outburst. As there seems to be a lot of peaks around 3000 Å, which is correspondent
+#with UV emissions.
+
+#Stage: Quiescence
+filename = '/content/ADP.2021-03-08T13_19_19.763.fits' #Observation date & time 2021-02-18 08:38:57. SNR: 13.1. Spec. resolution: 4112. Spec. range: 298.9-556 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 910 s. Publication date: 2021-03-08.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength = data['WAVE'][0]
+flux = data['FLUX'][0]
+
+#I converted the wavelength to angstrom (Å). As that was the only thing in the original file differing from the unit used
+#on the Specutils website  (https://specutils.readthedocs.io/en/stable/).
+wavelength_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_angstrom = wavelength * wavelength_unit.to('angstrom')
+
+
+#This creates the Spectrum1D object.
+spectrum = Spectrum1D(spectral_axis=wavelength_angstrom * u.angstrom, flux=flux * u.Unit(hdulist['SPECTRUM'].header['TUNIT2']))
+
+
+plt.plot(spectrum.spectral_axis, spectrum.flux)
+plt.xlabel('Wavelength (Å)')
+plt.xlim(3000, 3100)
+plt.ylim(0,)
+plt.ylabel('Flux ((1e-13)erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+
+
+
+
+--------------------------------------------
+
+
+
+#Plot 2
+
+#Same date of star in quiescence. But at different wavelength.
+filename = '/content/ADP.2021-03-08T13_19_19.767.fits' #Same date as the above plot (so is also in outburst/quiescence). SNR: 12.6. Rest of the details is the same.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength = data['WAVE'][0]
+flux = data['FLUX'][0]
+
+#I converted the wavelength to angstrom (Å). As that was the only thing in the original file differing from the unit used
+#on the Specutils website  (https://specutils.readthedocs.io/en/stable/).
+wavelength_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_angstrom = wavelength * wavelength_unit.to('angstrom')
+
+#This creates the Spectrum1D object.
+spectrum = Spectrum1D(spectral_axis=wavelength_angstrom * u.angstrom, flux=flux * u.Unit(hdulist['SPECTRUM'].header['TUNIT2']))
+
+
+plt.plot(spectrum.spectral_axis, spectrum.flux)
+plt.xlabel('Wavelength (Å)')
+plt.xlim(5335, 5360)
+plt.ylim(0,)
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+
+
+
+-------------------------------------------
+
+
+
+#Plot 3
+#Also from the Outburst day. With different wavelengths.
+filename = '/content/ADP.2021-07-06T14_08_27.137.fits' #Observation date & time 2021-06-05 00:55:37. SNR: 18.9. Spec. resolution: 8935. Spec. range: 533.7-1020 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 790 s. Publication date: 2021-07-06.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength = data['WAVE'][0]
+flux = data['FLUX'][0]
+
+#I converted the wavelength to angstrom (Å). As that was the only thing in the original file differing from the unit used
+#on the Specutils website  (https://specutils.readthedocs.io/en/stable/).
+wavelength_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_angstrom = wavelength * wavelength_unit.to('angstrom')
+
+#This creates the Spectrum1D object.
+spectrum = Spectrum1D(spectral_axis=wavelength_angstrom * u.angstrom, flux=flux * u.Unit(hdulist['SPECTRUM'].header['TUNIT2']))
+
+
+plt.plot(spectrum.spectral_axis, spectrum.flux)
+plt.xlabel('Wavelength (Å)')
+plt.xlim(5338, 5440)
+plt.ylim(0,)
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+
+
+
+
+--------------------------------------------
+
+
+
+#Plot 4
+#Also from the Outburst day. With different wavelengths.
+filename = '/content/ADP.2021-07-06T14_08_27.210.fits' #Observation date & time 2021-06-05 00:43:16. SNR: 20.4. Spec. resolution: 8935. Spec. range: 533.7-1020 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 790 s. Publication date: 2021-07-06.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength = data['WAVE'][0]
+flux = data['FLUX'][0]
+
+#I converted the wavelength to angstrom (Å). As that was the only thing in the original file differing from the unit used
+#on the Specutils website  (https://specutils.readthedocs.io/en/stable/).
+wavelength_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_angstrom = wavelength * wavelength_unit.to('angstrom')
+
+#This creates the Spectrum1D object.
+spectrum = Spectrum1D(spectral_axis=wavelength_angstrom * u.angstrom, flux=flux * u.Unit(hdulist['SPECTRUM'].header['TUNIT2']))
+
+
+plt.plot(spectrum.spectral_axis, spectrum.flux)
+plt.xlabel('Wavelength (Å)')
+plt.xlim(2990, 3060)
+plt.ylim(0,)
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+
+
+-------------------------------------------
+
+
+
+# Plot 5
+#However, when I use the Spectrum1D thing from this website (https://specutils.readthedocs.io/en/stable/), similar to the
+#whole Lomb-Scargle thing and its own seperate page on AstroPy GitHub, I get something more sensible.
+!pip install specutils
+from astropy.io import fits
+import numpy as np
+import matplotlib.pyplot as plt
+from astropy import units as u
+from specutils import Spectrum1D
+#Stage: Outburst
+filename = '/content/ADP.2021-07-06T14_08_27.033.fits' #Observation date & time 2021-06-05 00:57:46. SNR: 14.4. Spec. resolution: 5573. Spec. range: 994-2101 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 900 s. Publication date: 2021-07-06.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength = data['WAVE'][0]
+flux = data['FLUX'][0]
+
+#I converted the wavelength to angstrom (Å). As that was the only thing in the original file differing from the unit used
+#on the Specutils website  (https://specutils.readthedocs.io/en/stable/).
+wavelength_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_angstrom = wavelength * wavelength_unit.to('angstrom')
+
+#This creates the Spectrum1D object.
+spectrum = Spectrum1D(spectral_axis=wavelength_angstrom * u.angstrom, flux=flux * u.Unit(hdulist['SPECTRUM'].header['TUNIT2']))
+
+
+plt.plot(spectrum.spectral_axis, spectrum.flux)
+plt.xlabel('Wavelength (Å)')
+#plt.xlim(5000, 20000)
+plt.xlim(15000, 16500)
+plt.ylim(0,)
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+
+
+
+-------------------------------------------------------------------
+
+
+
+from google.colab import drive
+drive.mount('/content/drive')
+
+-----
+
+!pip install specutils
+from astropy.io import fits
+import numpy as np
+import matplotlib.pyplot as plt
+from astropy import units as u
+from specutils import Spectrum1D
+
+----
+from scipy.signal import find_peaks
+#Also from the Outburst day. With different wavelengths.
+filename = '/content/ADP.2021-07-06T14_08_27.137.fits' #Observation date & time 2021-06-05 00:55:37. SNR: 18.9. Spec. resolution: 8935. Spec. range: 533.7-1020 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 790 s. Publication date: 2021-07-06.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength = data['WAVE'][0]
+flux = data['FLUX'][0]
+
+#I converted the wavelength to angstrom (Å). As that was the only thing in the original file differing from the unit used
+#on the Specutils website  (https://specutils.readthedocs.io/en/stable/).
+wavelength_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_angstrom = wavelength * wavelength_unit.to('angstrom')
+
+#This creates the Spectrum1D object.
+spectrum = Spectrum1D(spectral_axis=wavelength_angstrom * u.angstrom, flux=flux * u.Unit(hdulist['SPECTRUM'].header['TUNIT2']))
+
+# Find peaks in the flux data
+peaks, _ = find_peaks(spectrum.flux, height=1e-14)
+
+# Print the wavelengths corresponding to the peaks
+peak_wavelengths = spectrum.spectral_axis[peaks]
+print("Wavelengths corresponding to peaks with flux > 1:")
+for wavelength in peak_wavelengths:
+    print(wavelength)
+
+plt.plot(spectrum.spectral_axis, spectrum.flux)
+plt.xlabel('Wavelength (Å)')
+plt.xlim(5338, 5440)
+plt.ylim(0,)
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+
+
+----------------------
+
+wavelength_filtered = wavelength[(wavelength >= 538) & (wavelength <= 540)]
+flux_filtered = flux[(wavelength >= 538) & (wavelength <= 540)]
+
+wavelength_filtered_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_filtered_angstrom = wavelength_filtered * wavelength_filtered_unit.to('angstrom')
+
+#This creates the Spectrum1D object.
+spectrum = Spectrum1D(spectral_axis=wavelength_filtered_angstrom * u.angstrom, flux=flux_filtered * u.Unit(hdulist['SPECTRUM'].header['TUNIT2']))
+
+print(wavelength_filtered[np.argmax(flux_filtered)])
+
+plt.plot(spectrum.spectral_axis, spectrum.flux)
+plt.xlabel('Wavelength (Å)')
+plt.xlim(5380, 5400)
+plt.ylim(0,)
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+
+
+
+------------------------------------------------------------------------------------
+
+
+
+
+from astropy.timeseries import LombScargle
+
+# Compute the Lomb-Scargle periodogram
+frequency, power = LombScargle(spectrum.spectral_axis, spectrum.flux).autopower()
+
+# Plot the Lomb-Scargle periodogram
+plt.plot(1/frequency, power)
+plt.xlabel('Period (Å)')
+plt.ylabel('Power')
+plt.title('Lomb-Scargle Periodogram')
+plt.grid(True)
+plt.show()
+print(wavelength[np.argmax(flux)])
+
+-----------------------
+
+
+#Also from the Outburst day. With different wavelengths.
+filename = '/content/ADP.2021-07-06T14_08_27.210.fits' #Observation date & time 2021-06-05 00:43:16. SNR: 20.4. Spec. resolution: 8935. Spec. range: 533.7-1020 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 790 s. Publication date: 2021-07-06.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength = data['WAVE'][0]
+flux = data['FLUX'][0]
+
+#I converted the wavelength to angstrom (Å). As that was the only thing in the original file differing from the unit used
+#on the Specutils website  (https://specutils.readthedocs.io/en/stable/).
+wavelength_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_angstrom = wavelength * wavelength_unit.to('angstrom')
+
+#This creates the Spectrum1D object.
+spectrum = Spectrum1D(spectral_axis=wavelength_angstrom * u.angstrom, flux=flux * u.Unit(hdulist['SPECTRUM'].header['TUNIT2']))
+
+# Find peaks in the flux data
+peaks, _ = find_peaks(spectrum.flux, height=2.4e-14)
+
+# Print the wavelengths corresponding to the peaks
+peak_wavelengths = spectrum.spectral_axis[peaks]
+print("Wavelengths corresponding to peaks with flux > 1:")
+for wavelength in peak_wavelengths:
+    print(wavelength)
+
+plt.plot(spectrum.spectral_axis, spectrum.flux)
+plt.xlabel('Wavelength (Å)')
+plt.xlim(2990, 3060)
+plt.ylim(0,)
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+print(flux)
+
+
+--------------------------------
+
+wvs = []
+for i in range(len(wavelength)):
+    if flux[i] >= 2e-14:
+        wvs.append(wavelength[i])
+print(wvs)
+
+----------
+
+print(spectrum.flux[wavelength == 301.1])
+
+---------
+
+print(wavelength[np.argmax(flux)])
+
+
+--------
+
+
+# Compute the Fourier Transform of the spectroscopy data
+ft = np.fft.fft(flux)
+
+# Compute the power spectrum by taking the absolute square of the Fourier Transform
+power_spectrum = np.abs(ft) ** 2
+
+# Compute the corresponding frequency values for the power spectrum
+# Assumes the data is equally spaced in time (or wavelength/frequency)
+sampling_rate = 0.1  # Adjust if your data has a different sampling rate
+frequency = np.fft.fftfreq(len(flux), d=1/sampling_rate)
+
+print(frequency)
+# Plot the power spectrum
+plt.plot(frequency, power_spectrum)
+plt.xlabel('Frequency')
+plt.ylabel('Power Spectrum')
+plt.title('Power Spectrum of Spectroscopy Data')
+plt.grid(True)
+plt.show()
+
+
+-------------------------
+
+
+# This code plots the full spectroscopic data (flux vs avelength) of Gaia23afq on June 5, 2021 (not an outburst)
+
+from scipy.signal import find_peaks
+import astropy.units as u
+
+wavelength = []
+flux = []
+
+filename = '/content/ADP.2021-07-06T14_08_27.289.fits' #Observation date & time 2021-06-05 00:55:37. SNR: 18.9. Spec. resolution: 8935. Spec. range: 533.7-1020 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 790 s. Publication date: 2021-07-06.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength1 = data['WAVE'][0]
+flux1 = data['FLUX'][0]
+
+wv_filt1 = wavelength1[(wavelength1 >= 298.9) & (wavelength1 <= 533.7)]
+fl_filt1 = flux1[(wavelength1 >= 298.9) & (wavelength1 <= 533.7)]
+
+for el in wv_filt1:
+  wavelength.append(el)
+
+for al in fl_filt1:
+  flux.append(al)
+
+filename = '/content/ADP.2021-07-06T14_08_27.137 (1).fits' #Observation date & time 2021-06-05 00:55:37. SNR: 18.9. Spec. resolution: 8935. Spec. range: 533.7-1020 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 790 s. Publication date: 2021-07-06.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength2 = data['WAVE'][0]
+flux2 = data['FLUX'][0]
+
+wv_filt2 = wavelength2[(wavelength2 >= 533.7) & (wavelength2 <= 1020)]
+fl_filt2 = flux2[(wavelength2 >= 533.7) & (wavelength2 <= 1020)]
+
+
+for el in wv_filt2:
+  wavelength.append(el)
+
+for al in fl_filt2:
+  flux.append(al)
+
+
+filename = '/content/ADP.2021-07-06T14_08_27.033.fits' #Observation date & time 2021-06-05 00:55:37. SNR: 18.9. Spec. resolution: 8935. Spec. range: 533.7-1020 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 790 s. Publication date: 2021-07-06.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength3 = data['WAVE'][0]
+flux3 = data['FLUX'][0]
+
+wv_filt3 = wavelength3[(wavelength3 >= 994) & (wavelength3 <= 2101)]
+fl_filt3 = flux3[(wavelength3 >= 994) & (wavelength3 <= 2101)]
+
+for el in wv_filt3:
+  wavelength.append(el)
+
+for al in fl_filt3:
+  flux.append(al)
+
+wavelength_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_angstrom = np.asarray(wavelength) * wavelength_unit.to('angstrom')
+
+plt.plot(wavelength_angstrom, flux)
+plt.xlabel('Wavelength (Å)')
+#plt.xlim(2989, 5560)
+#plt.ylim(0,)
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+#wavelength.append(el for el in wv_filt3)
+#flux.append(fl_filt3)
+
+
+--------------------------
+
+
+zone1_wavelength = wavelength_angstrom[(wavelength_angstrom >= 5325) & (wavelength_angstrom <= 5400)]
+zone1_flux = np.asarray(flux)[(wavelength_angstrom >= 5325) & (wavelength_angstrom <= 5400)]
+
+# Find peaks in the flux data
+peaks1, _ = find_peaks(zone1_flux, height=4e-14)
+
+# Print the wavelengths corresponding to the peaks
+peak_wavelengths1 = [wavelength[i] for i in peaks]
+#print("Wavelengths corresponding to peaks with flux >= 4e-14:")
+#for wave in peak_wavelengths:
+#    print(wave)
+print("Wavelength corresponding the maximum peak:", zone1_wavelength[np.argmax(zone1_flux)])
+
+plt.plot(zone1_wavelength, zone1_flux)
+plt.xlabel('Wavelength (Å)')
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+
+
+-------------------------
+
+
+zone1_wavelength = wavelength_angstrom[(wavelength_angstrom >= 3005) & (wavelength_angstrom <= 3007)]
+zone1_flux = np.asarray(flux)[(wavelength_angstrom >= 3005) & (wavelength_angstrom <= 3007)]
+
+# Find peaks in the flux data
+peaks1, _ = find_peaks(zone1_flux, height=4e-14)
+
+# Print the wavelengths corresponding to the peaks
+peak_wavelengths1 = [wavelength[i] for i in peaks]
+#print("Wavelengths corresponding to peaks with flux >= 4e-14:")
+#for wave in peak_wavelengths:
+#    print(wave)
+print("Wavelength corresponding the maximum peak:", zone1_wavelength[np.argmax(zone1_flux)])
+
+plt.plot(zone1_wavelength, zone1_flux)
+plt.xlabel('Wavelength (Å)')
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+
+
+------------------------
+
+
+# June 5
+
+# Find peaks in the flux data
+peaks, _ = find_peaks(flux, height=1.5e-14)
+
+# Print the wavelengths corresponding to the peaks
+peak_wavelengths = [wavelength[i] for i in peaks]
+print("Wavelengths corresponding to peaks with flux >= 1:")
+for wave in peak_wavelengths:
+    print(wave)
+
+
+----------------
+
+
+# Compute the Fourier Transform of the spectroscopy data
+ft = np.fft.fft(flux)
+
+# Compute the power spectrum by taking the absolute square of the Fourier Transform
+power_spectrum = np.abs(ft) ** 2
+
+# Compute the corresponding frequency values for the power spectrum
+# Assumes the data is equally spaced in time (or wavelength/frequency)
+sampling_rate = 0.1  # Adjust if your data has a different sampling rate
+frequency = np.fft.fftfreq(len(flux), d=1/sampling_rate)
+
+print(frequency)
+# Plot the power spectrum
+plt.plot(frequency, power_spectrum)
+plt.xlabel('Frequency')
+plt.ylabel('Power Spectrum')
+#plt.xlim(-0.02, 0.02)
+plt.title('Power Spectrum of Spectroscopy Data')
+plt.grid(True)
+plt.show()
+
+
+--------------------------
+
+
+# This code plots the full spectroscopic data (flux vs avelength) of Gaia23afq on February 18, 2021 (supposedly a flare up)
+
+from scipy.signal import find_peaks
+import astropy.units as u
+
+wavelength = []
+flux = []
+
+filename = '/content/ADP.2021-03-08T13_19_19.763.fits'
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength1 = data['WAVE'][0]
+flux1 = data['FLUX'][0]
+
+wv_filt1 = wavelength1[(wavelength1 >= 298.9) & (wavelength1 <= 533.7)]
+fl_filt1 = flux1[(wavelength1 >= 298.9) & (wavelength1 <= 533.7)]
+
+for el in wv_filt1:
+  wavelength.append(el)
+
+for al in fl_filt1:
+  flux.append(al)
+
+filename = '/content/ADP.2021-03-08T13_19_19.797.fits'
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength2 = data['WAVE'][0]
+flux2 = data['FLUX'][0]
+
+wv_filt2 = wavelength2[(wavelength2 >= 533.7) & (wavelength2 <= 1020)]
+fl_filt2 = flux2[(wavelength2 >= 533.7) & (wavelength2 <= 1020)]
+
+
+for el in wv_filt2:
+  wavelength.append(el)
+
+for al in fl_filt2:
+  flux.append(al)
+
+
+filename = '/content/ADP.2021-03-08T13_19_19.754.fits'
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength3 = data['WAVE'][0]
+flux3 = data['FLUX'][0]
+
+wv_filt3 = wavelength3[(wavelength3 >= 994) & (wavelength3 <= 2479)]
+fl_filt3 = flux3[(wavelength3 >= 994) & (wavelength3 <= 2479)]
+
+for el in wv_filt3:
+  wavelength.append(el)
+
+for al in fl_filt3:
+  flux.append(al)
+
+wavelength_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_angstrom = np.asarray(wavelength) * wavelength_unit.to('angstrom')
+
+plt.plot(wavelength_angstrom, flux)
+plt.xlabel('Wavelength (Å)')
+plt.xlim(2989, 24790)
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+
+
+-----------------------------------------------
+
+
+
+# Find peaks in the flux data
+peaks, _ = find_peaks(flux, height=1e-14)
+
+# Print the wavelengths corresponding to the peaks
+peak_wavelengths = [wavelength[i] for i in peaks]
+print("Wavelengths corresponding to peaks with flux >= 1:")
+for wave in peak_wavelengths:
+    print(wave)
+
+
+---------------------------------
+
+
+
+
+
