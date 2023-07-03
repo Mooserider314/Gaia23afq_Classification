@@ -269,4 +269,72 @@ plt.show()
 ----------------------------------------------------------------------------------------------------------------
 
 
+# This code plots the full spectroscopic data (flux vs avelength) of Gaia23afq on June 5, 2021 (not an outburst)
 
+from scipy.signal import find_peaks
+import astropy.units as u
+
+wavelength = []
+flux = []
+
+filename = '/content/ADP.2021-07-06T14_08_27.289.fits' #Observation date & time 2021-06-05 00:55:37. SNR: 18.9. Spec. resolution: 8935. Spec. range: 533.7-1020 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 790 s. Publication date: 2021-07-06.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength1 = data['WAVE'][0]
+flux1 = data['FLUX'][0]
+
+wv_filt1 = wavelength1[(wavelength1 >= 298.9) & (wavelength1 <= 533.7)]
+fl_filt1 = flux1[(wavelength1 >= 298.9) & (wavelength1 <= 533.7)]
+
+for el in wv_filt1:
+  wavelength.append(el)
+
+for al in fl_filt1:
+  flux.append(al)
+
+filename = '/content/ADP.2021-07-06T14_08_27.137 (1).fits' #Observation date & time 2021-06-05 00:55:37. SNR: 18.9. Spec. resolution: 8935. Spec. range: 533.7-1020 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 790 s. Publication date: 2021-07-06.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength2 = data['WAVE'][0]
+flux2 = data['FLUX'][0]
+
+wv_filt2 = wavelength2[(wavelength2 >= 533.7) & (wavelength2 <= 1020)]
+fl_filt2 = flux2[(wavelength2 >= 533.7) & (wavelength2 <= 1020)]
+
+
+for el in wv_filt2:
+  wavelength.append(el)
+
+for al in fl_filt2:
+  flux.append(al)
+
+
+filename = '/content/ADP.2021-07-06T14_08_27.033.fits' #Observation date & time 2021-06-05 00:55:37. SNR: 18.9. Spec. resolution: 8935. Spec. range: 533.7-1020 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 790 s. Publication date: 2021-07-06.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength3 = data['WAVE'][0]
+flux3 = data['FLUX'][0]
+
+wv_filt3 = wavelength3[(wavelength3 >= 994) & (wavelength3 <= 2101)]
+fl_filt3 = flux3[(wavelength3 >= 994) & (wavelength3 <= 2101)]
+
+for el in wv_filt3:
+  wavelength.append(el)
+
+for al in fl_filt3:
+  flux.append(al)
+
+wavelength_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_angstrom = np.asarray(wavelength) * wavelength_unit.to('angstrom')
+
+plt.plot(wavelength_angstrom, flux)
+plt.xlabel('Wavelength (Å)')
+#plt.xlim(2989, 5560)
+#plt.ylim(0,)
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+#wavelength.append(el for el in wv_filt3)
+#flux.append(fl_filt3)
