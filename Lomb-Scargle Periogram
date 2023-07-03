@@ -1,0 +1,63 @@
+#lomb-scale
+#The first bit of code here imports the data from the ASAS-SN survey that computed the light curve for a shorter period of time than 13 years (link: https://asas-sn.osu.edu/variables/f3ac0265-7f5b-5c7e-a05c-4d5c25b7e7e6).
+#I clicked on the JSON portion for downloading and it lead me to a seperate site containing the data written as just texts. Link: https://asas-sn.osu.edu/variables/f3ac0265-7f5b-5c7e-a05c-4d5c25b7e7e6.json
+#To access this data, you need to do this import bit and include the url to the JSON link.
+import requests
+
+json_url = "https://asas-sn.osu.edu/variables/f3ac0265-7f5b-5c7e-a05c-4d5c25b7e7e6.json"
+
+#You need to get a request to join the link. The if-else statement was done through ChatGPT. But upon checking the data values, they're all correct.
+response = requests.get(json_url)
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Get the JSON data from the response
+    json_data = response.json()
+
+    # Extract the light curve data
+    light_curve = json_data['results']
+
+    # Create empty lists to store the relevant properties
+    hjd_values = []
+    mag_values = []
+    mag_err_values = []
+    flux_values = []
+    flux_err_values = []
+
+    # Iterate over the light curve data and extract the values
+    for data_point in light_curve:
+        hjd_values.append(data_point['hjd'])
+        mag_values.append(data_point['mag'])
+        mag_err_values.append(data_point['mag_err'])
+        flux_values.append(data_point['flux'])
+        flux_err_values.append(data_point['flux_err'])
+
+    #This creates a list with each of the measured values for the various observational parameters.
+else:
+    print("Failed to retrieve JSON data.")
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from astropy.timeseries import LombScargle
+
+#To create the Lomb-Scargle periodogram as shown on the general AstroPy website (https://docs.astropy.org/en/stable/timeseries/lombscargle.html#id38), I did the following.
+#Call upon the time and magnitude values for the data. As these are needed to find the frequency and power.
+time = hjd_values
+magnitude = mag_values
+
+#This code converts the time to numerical values (in case needed. However not much changes of the results from this. I only needed it for trying out some other stuff which didn't work).
+time = np.asarray(time)
+
+#The next line of code computes the Lomb-Scargle in the exact way it was done on the AstroPy link given through autopower().
+frequency, power = LombScargle(time, magnitude).autopower()
+
+#Plotting the result.
+plt.plot(frequency, power)
+plt.xlabel('Frequency (1/d)')
+plt.ylabel('Lomb-Scargle Power')
+plt.title('Lomb-Scargle periodogram of Gaia23afq')
+plt.show()
+
+
+
