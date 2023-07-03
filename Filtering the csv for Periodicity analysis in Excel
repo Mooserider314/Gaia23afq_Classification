@@ -1,0 +1,30 @@
+import os
+import csv
+
+threshold = 19
+threshold1 = 25
+threshold2 = 20
+input_file = '/light_curve23afq.csv'
+output_file = '/content/output_err12.csv'
+
+with open(input_file, 'r') as file_in, open(output_file, 'w', newline='') as file_out:
+    reader = csv.reader(file_in)
+    writer = csv.writer(file_out)
+
+    header = next(reader)
+    writer.writerow([header[0], header[5], header[6]])  # Write only column 1 (x-value) and column 7 (y-value) headers
+
+    for row in reader:
+        try:
+            x_value = float(row[0])
+            y_value = float(row[5])
+            z_value = float(row[6])
+
+
+
+            if y_value < threshold and z_value < threshold2:
+              writer.writerow([x_value, y_value, z_value])  # Write only column 1 and column 7 values
+
+
+        except ValueError:
+            continue
