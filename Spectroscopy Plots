@@ -1,0 +1,199 @@
+!pip install specutils
+from astropy.io import fits
+import numpy as np
+import matplotlib.pyplot as plt
+from astropy import units as u
+from specutils import Spectrum1D
+
+#This code plots one of the downloaded ESO files. I corrected for the units and obtained something representative of the
+#actual plot.
+
+#My suspicion is that this might be in outburst. As there seems to be a lot of peaks around 3000 Å, which is correspondent
+#with UV emissions.
+
+#Stage: Quiescence
+filename = '/content/ADP.2021-03-08T13_19_19.763.fits' #Observation date & time 2021-02-18 08:38:57. SNR: 13.1. Spec. resolution: 4112. Spec. range: 298.9-556 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 910 s. Publication date: 2021-03-08.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength = data['WAVE'][0]
+flux = data['FLUX'][0]
+
+#I converted the wavelength to angstrom (Å). As that was the only thing in the original file differing from the unit used
+#on the Specutils website  (https://specutils.readthedocs.io/en/stable/).
+wavelength_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_angstrom = wavelength * wavelength_unit.to('angstrom')
+
+
+#This creates the Spectrum1D object.
+spectrum = Spectrum1D(spectral_axis=wavelength_angstrom * u.angstrom, flux=flux * u.Unit(hdulist['SPECTRUM'].header['TUNIT2']))
+
+
+plt.plot(spectrum.spectral_axis, spectrum.flux)
+plt.xlabel('Wavelength (Å)')
+plt.xlim(3000, 3100)
+plt.ylim(0,)
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+
+
+
+---------------------------------------------------------------------------------------------------
+
+
+
+#PRINTING WAVELENGTHS
+# Define the desired range of wavelengths
+start_wavelength = 300.0
+end_wavelength = 310.0
+
+# Print wavelengths within the desired range
+for w, f in zip(wavelength, flux):
+    if start_wavelength <= w <= end_wavelength:
+        print("Wavelength:", w, "Flux:", f)
+
+
+-------------------------------------------------------------- -----------------------------------------
+
+
+
+#I repeated the same thing for another file from the same ESO website (with the same RA and DEC coordinates) that appeared
+#to have a spectrum in the 5000 Å range. Leading me to suspect that this might be a spectrum in quiesence.
+
+#Same date of star in quiescence. But at different wavelength.
+filename = '/content/ADP.2021-03-08T13_19_19.767.fits' #Same date as the above plot (so is also in outburst/quiescence). SNR: 12.6. Rest of the details is the same.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength = data['WAVE'][0]
+flux = data['FLUX'][0]
+
+#I converted the wavelength to angstrom (Å). As that was the only thing in the original file differing from the unit used
+#on the Specutils website  (https://specutils.readthedocs.io/en/stable/).
+wavelength_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_angstrom = wavelength * wavelength_unit.to('angstrom')
+
+#This creates the Spectrum1D object.
+spectrum = Spectrum1D(spectral_axis=wavelength_angstrom * u.angstrom, flux=flux * u.Unit(hdulist['SPECTRUM'].header['TUNIT2']))
+
+
+plt.plot(spectrum.spectral_axis, spectrum.flux)
+plt.xlabel('Wavelength (Å)')
+plt.xlim(5335, 5360)
+plt.ylim(0,)
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+#PRINTING WAVELENGTHS
+# Define the desired range of wavelengths
+start_wavelength = 533.50
+end_wavelength = 536.00
+
+# Print wavelengths within the desired range
+for w, f in zip(wavelength, flux):
+    if start_wavelength <= w <= end_wavelength:
+        print("Wavelength:", w, "Flux:", f)
+
+
+#now check for the 3 highest peaks by comparing flux, copy paste in google docs and check for corresponding elements
+
+
+
+-----------------------------------------------------------------------------------------------------------
+
+
+
+#However, when I use the Spectrum1D thing from this website (https://specutils.readthedocs.io/en/stable/), similar to the
+#whole Lomb-Scargle thing and its own seperate page on AstroPy GitHub, I get something more sensible.
+!pip install specutils
+from astropy.io import fits
+import numpy as np
+import matplotlib.pyplot as plt
+from astropy import units as u
+from specutils import Spectrum1D
+#Stage: Outburst
+filename = '/content/ADP.2021-07-06T14_08_27.033.fits' #Observation date & time 2021-06-05 00:57:46. SNR: 14.4. Spec. resolution: 5573. Spec. range: 994-2101 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 900 s. Publication date: 2021-07-06.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength = data['WAVE'][0]
+flux = data['FLUX'][0]
+
+#I converted the wavelength to angstrom (Å). As that was the only thing in the original file differing from the unit used
+#on the Specutils website  (https://specutils.readthedocs.io/en/stable/).
+wavelength_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_angstrom = wavelength * wavelength_unit.to('angstrom')
+
+#This creates the Spectrum1D object.
+spectrum = Spectrum1D(spectral_axis=wavelength_angstrom * u.angstrom, flux=flux * u.Unit(hdulist['SPECTRUM'].header['TUNIT2']))
+
+
+plt.plot(spectrum.spectral_axis, spectrum.flux)
+plt.xlabel('Wavelength (Å)')
+#plt.xlim(5000, 20000)
+plt.xlim(15000, 16500)
+plt.ylim(0,)
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+
+
+
+#PRINTING WAVELENGTHS
+# Define the desired range of wavelengths
+start_wavelength = 1500.0
+end_wavelength = 1502.0
+
+# Print wavelengths within the desired range
+for w, f in zip(wavelength, flux):
+    if start_wavelength <= w <= end_wavelength:
+        print("wavelength:", w, "Flux:", f)
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+
+#Also from the Outburst day. With different wavelengths.
+filename = '/content/ADP.2021-07-06T14_08_27.137.fits' #Observation date & time 2021-06-05 00:55:37. SNR: 18.9. Spec. resolution: 8935. Spec. range: 533.7-1020 nm. Instrument: XSHOOTER. PI: PALA, ANNA FRANCESCA. Exposure time: 790 s. Publication date: 2021-07-06.
+hdulist = fits.open(filename)
+data = hdulist['SPECTRUM'].data
+
+wavelength = data['WAVE'][0]
+flux = data['FLUX'][0]
+
+#I converted the wavelength to angstrom (Å). As that was the only thing in the original file differing from the unit used
+#on the Specutils website  (https://specutils.readthedocs.io/en/stable/).
+wavelength_unit = u.Unit(hdulist['SPECTRUM'].header['TUNIT1'])
+wavelength_angstrom = wavelength * wavelength_unit.to('angstrom')
+
+#This creates the Spectrum1D object.
+spectrum = Spectrum1D(spectral_axis=wavelength_angstrom * u.angstrom, flux=flux * u.Unit(hdulist['SPECTRUM'].header['TUNIT2']))
+
+
+plt.plot(spectrum.spectral_axis, spectrum.flux)
+plt.xlabel('Wavelength (Å)')
+plt.xlim(5338, 5440)
+plt.ylim(0,)
+plt.ylabel('Flux (erg cm^-2 s^-1 Å^-1 )')
+plt.show()
+
+
+
+
+---------------------------------------------------------------------------------------------------------
+
+
+
